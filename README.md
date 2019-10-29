@@ -46,7 +46,6 @@ book.name = bb;
     </dependency>
    </dependencies>
   
-
 四.SpringBoot如何进行整合测试：??
 1. 在测试的module里添加：
    <dependency>
@@ -141,8 +140,6 @@ converters) {
 }
 3. 设置application.properties,添加：
 spring.http.encoding.force = true
- 
-
 第二种方法：
 1. 在启动类application.java中添加注释@Bean:
 public HttpMessageConverters fastJsonMessageConverter(){
