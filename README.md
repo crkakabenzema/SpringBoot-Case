@@ -31,6 +31,8 @@ Several cases about SpringBoot
         </plugins>
     </build>
 
+
+
 二. SpringBoot 创建父工程和子工程，并对子工程的dependency进行管理
 1. 父级工程Pom的<package>pom</package>
 <!-- 父级依赖 -->
@@ -74,6 +76,8 @@ Several cases about SpringBoot
     </dependency>
 </dependencies>
 
+
+
 三.SpringBoot 自定义属性的类型安全配置方法ConfigurationProperties：
 1. 在application.properties文件中自定义属性，如：
 book.author = aa;
@@ -81,10 +85,14 @@ book.name = bb;
 2. 使用注释@ConfigurationProperties(prefix="book")
 3. Generate: getter and setter
 
+
+
 四.SpringBoot 如何配置profile:
 1. 创建application-prod.properties, application-sit.properties, application-dev.properties文件
 2. 通过在application.properties中设置spring.profiles.active = dev/sit/prod来指定活动的profile
-  
+
+
+
 五.SpringBoot如何进行整合测试:
 1. 在测试的子module里添加：
    <dependency>
@@ -128,27 +136,36 @@ public class TestSpringController {
         TestCase.assertEquals(this.springController.yes(), "hello");
     }
 }
-  
-  
-  
-  
-  
-  
-  
-五.SpringBoot如何分离启动类和控制类：
-1. 在src/main/java下创建com.project.app的package,新建applications.java
+
+
+
+六.SpringBoot如何分离启动类和控制类：
+1. 在src/main/java下新建package,
+新建启动类applications.java，
+启动类中添加注释@EnableAutoConfiguration+@ComponentScan(“com.project.controller”)
+或者@SpringBootApplication(scanBasePackage = {"com.project"})
 2. 在applications.java中添加：
-@SpringBootApplication(scanBasePackage = {"com.project"})
-// SpringBootApplication为组合注解，等同于@EnableConfiguration + 
-// @ComponentScan(“com.project.controller”)
 public class SpringApplications {
 
     public static void main(String[] args){
         SpringApplication.run(SpringApplications.class, args);
     }
 }
+3. 在src/main/java下新建package，
+新建控制类controller.java,
+控制类添加注释@Controller
 
-六.SpringBoot设置开发模式：
+
+
+七.SpringBoot支持Rest风格,添加@PathVariable注释，如：
+@RequestMapping("/info/{msg}")
+public String show(@PathVariable String msg){
+    return msg;
+}
+
+
+
+七.SpringBoot设置开发模式：
 1. 在POM文件中添加两个dependency:
    <dependency>
     <groupId>org.springframework</groupId>
@@ -158,14 +175,8 @@ public class SpringApplications {
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-devtools</artifactId>
    </dependency>
+   
 
-七.SpringBoot实现Web开发:
-1. 在POM中添加dependency:
-   <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-test</artifactId>
-    <scope>test</scope>
-   </dependency>
 
 八.SpringBoot 访问静态资源
 1. Spring Boot 从classpath的 static, public或 /META-INF/RESOURCES文件夹或从ServletContext根目录提供静态内容
