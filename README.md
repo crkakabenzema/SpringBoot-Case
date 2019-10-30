@@ -493,8 +493,61 @@ public class UserController {
 
 
 
+十六. SpringBoot整合mybatis，利用xml文件配置:
+1. 在pom文件中，添加dependency:
+       <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.3.1</version>
+        </dependency>
 
-
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.0.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+2. 在resources目录新建mybatis文件夹，新建mybatis-config.xml文件,添加：
+<? xml version="1.0" encoding="UTF-8">
+<!DOCTYPE configuration
+      PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+      "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    
+</configuration>
+3.在resources目录添加application.yml,添加数据源属性配置:
+spring:
+    database:
+        name:test
+        url:jdbc:mysql://127.0.0.1:3306/db1
+        username:root
+        password:root
+        type:com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+4.新建com.db1.pojo和com.db1.mapper包:
+将逆向工程的mapper包里的mapper.java文件放入resources文件夹里
 
 
 
