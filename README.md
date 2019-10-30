@@ -35,6 +35,7 @@ Several cases about SpringBoot
 
 二. SpringBoot 创建父工程和子工程，并对子工程的dependency进行管理
 1. 父级工程Pom的<package>pom</package>
+
 <!-- 父级依赖 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -43,6 +44,7 @@ Several cases about SpringBoot
     </parent>
     <packaging>pom</packaging>
 2. 父级工程Pom中,添加<dependency Management>, <depenedencies>, <dependency>等.如:
+    
 <dependencyManagement>
     <dependencies>
        <dependency> 
@@ -69,6 +71,7 @@ Several cases about SpringBoot
     </plugins>
  </build>
 3.创建new module,并在该Pom中添加dependencies,如:
+
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -95,6 +98,7 @@ book.name = bb;
 
 五.SpringBoot如何进行整合测试:
 1. 在测试的子module里添加：
+
    <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-test</artifactId>
@@ -107,6 +111,7 @@ book.name = bb;
     <scope>test</scope>
    </dependency>
 2. 创建controller包，添加Controller.java：
+
   @Controller
   @EnableAutoConfiguration
   public class SpringController{
@@ -121,6 +126,7 @@ book.name = bb;
   }
 3. 在子工程的/src/test/java 添加package,添加测试类的java,
 如：
+
 @SpringBootTest(classes = SpringController.class)  //SpringBootTest 测试的类目标
 @RunWith(SpringJUnit4ClassRunner.class)  //指明Runwith 进行测试的类工具
 @WebAppConfiguration  //WebAppConfiguration Springboot整合web
@@ -145,6 +151,7 @@ public class TestSpringController {
 启动类中添加注释@EnableAutoConfiguration+@ComponentScan(“com.project.controller”)
 或者@SpringBootApplication(scanBasePackage = {"com.project"})
 2. 在applications.java中添加：
+
 public class SpringApplications {
 
     public static void main(String[] args){
@@ -158,6 +165,7 @@ public class SpringApplications {
 
 
 七.SpringBoot支持Rest风格,添加@PathVariable注释，如：
+
 @RequestMapping("/info/{msg}")
 public String show(@PathVariable String msg){
     return msg;
@@ -167,6 +175,7 @@ public String show(@PathVariable String msg){
 
 七.SpringBoot设置开发模式：
 1. 在POM文件中添加两个dependency:
+
    <dependency>
     <groupId>org.springframework</groupId>
     <artifactId>springloaded</artifactId>
@@ -176,6 +185,7 @@ public String show(@PathVariable String msg){
     <artifactId>spring-boot-devtools</artifactId>
    </dependency>
    
+
 
 
 八.SpringBoot 访问静态资源
