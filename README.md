@@ -29,19 +29,8 @@ Several cases about SpringBoot
             </plugin>
         </plugins>
     </build>
-
-一.SpringBoot 基于类型安全的配置：
-1. 在application.properties文件中自定义属性，如：
-book.author = aa;
-book.name = bb;
-2. 使用注释@ConfigurationProperties(prefix="book")
-3. Generate: getter and setter
-
-二.SpringBoot 如何配置profile:
-1. 创建application-prod.properties, application-sit.properties, application-dev.properties文件
-2. 通过在application.properties中设置spring.profiles.active = dev/sit/prod来指定活动的profile
-
-三.SpringBoot 如何创建父工程和子工程：
+    
+二.SpringBoot 如何创建父工程和子工程：
 1. 在父工程的pom里，<package>必须是pom
 2. 在父工程的pom里，添加<dependency Management>, <depenedencies>, <dependency>等.
   如:
@@ -74,6 +63,17 @@ book.name = bb;
         <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
    </dependencies>
+
+二.SpringBoot 基于类型安全的配置：
+1. 在application.properties文件中自定义属性，如：
+book.author = aa;
+book.name = bb;
+2. 使用注释@ConfigurationProperties(prefix="book")
+3. Generate: getter and setter
+
+三.SpringBoot 如何配置profile:
+1. 创建application-prod.properties, application-sit.properties, application-dev.properties文件
+2. 通过在application.properties中设置spring.profiles.active = dev/sit/prod来指定活动的profile
   
 四.SpringBoot如何进行整合测试：??
 1. 在测试的module里添加：
