@@ -2,6 +2,7 @@
 Several cases about SpringBoot
 
 一.SpringBoot父工程pom配置:
+
     <!-- 父级依赖 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -29,88 +30,93 @@ Several cases about SpringBoot
             </plugin>
         </plugins>
     </build>
-    
-二.SpringBoot 如何创建父工程和子工程：
-1. 在父工程的pom里，<package>必须是pom
-2. 在父工程的pom里，添加<dependency Management>, <depenedencies>, <dependency>等.如:
-  <dependencyManagement>
-    <dependencies>
-        <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>1.5.6.RELEASE</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-   </dependencyManagement>
-  
-   <!-- 父工程添加后，子工程将直接使用<build>中的plugin -->
-   <build>
-    <plugins>
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-        </plugin>
-    </plugins>
-   </build>
-   
-  3. 在父工程添加new module
-  4. 在子工程添加相应的<dependencies>,<dependency>等
-   <dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-   </dependencies>
 
-三. SpringBoot 创建父工程对子工程的dependency进行管理
+二. SpringBoot 创建父工程和子工程，并对子工程的dependency进行管理
 1. 父级工程Pom的<package>pom</package>
-2. 父级工程Pom中,
-
+<!-- 父级依赖 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.6.RELEASE</version>
+    </parent>
+    <packaging>pom</packaging>
+2. 父级工程Pom中,添加<dependency Management>, <depenedencies>, <dependency>等.如:
 <dependencyManagement>
     <dependencies>
        <dependency> 
          <groupId>com.springframework.boot</groupId>
          <artifactId>spring-boot-dependencies</artifactId>
          <version>1.5.6.RELEASE</version>
+         <type>pom</type>
+         <scope>import</scope>
        </dependency>
     </dependencies>
 </dependencyManagement>
 
-二.SpringBoot 自定义属性的类型安全配置方法ConfigurationProperties：
+<!-- 父工程添加后，子工程将直接使用<build>中的plugin -->
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+            </configuration>
+        </plugin>
+    </plugins>
+ </build>
+3.创建new module,并在该Pom中添加dependencies,如:
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+
+三.SpringBoot 自定义属性的类型安全配置方法ConfigurationProperties：
 1. 在application.properties文件中自定义属性，如：
 book.author = aa;
 book.name = bb;
 2. 使用注释@ConfigurationProperties(prefix="book")
 3. Generate: getter and setter
 
-三.SpringBoot 如何配置profile:
+四.SpringBoot 如何配置profile:
 1. 创建application-prod.properties, application-sit.properties, application-dev.properties文件
 2. 通过在application.properties中设置spring.profiles.active = dev/sit/prod来指定活动的profile
   
-四.SpringBoot如何进行整合测试：??
-1. 在测试的module里添加：
+五.SpringBoot如何进行整合测试:
+1. 在测试的子module里添加：
    <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-test</artifactId>
     <scope>test</scope>
    </dependency>
+   
    <dependency>
     <groupId>junit</groupId>
     <artifactId>junit</artifactId>
     <scope>test</scope>
    </dependency>
-2. 在子工程的/src/test/java 添加package,添加测试类的java,
+2. 创建controller包，添加Controller.java：
+  @Controller
+  @EnableAutoConfiguration
+  public class SpringController{
+     
+     ...
+     
+     public static void main(String[] args){
+        
+        SpringApplication.run(SpringController.class, args);
+     }
+     
+  }
+3. 在子工程的/src/test/java 添加package,添加测试类的java,
 如：
-@SpringBootTest(classes = SpringController.class)
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
+@SpringBootTest(classes = SpringController.class)  //SpringBootTest 测试的类目标
+@RunWith(SpringJUnit4ClassRunner.class)  //指明Runwith 进行测试的类工具
+@WebAppConfiguration  //WebAppConfiguration Springboot整合web
 public class TestSpringController {
-
-  //Runwith 进行测试的类工具
-    //SpringBootTest 测试的类目标
-    //WebAppConfiguration Springboot整合web
 
     //使用@Autowired将springcontroller对象进行注入
     @Autowired
@@ -122,6 +128,12 @@ public class TestSpringController {
         TestCase.assertEquals(this.springController.yes(), "hello");
     }
 }
+  
+  
+  
+  
+  
+  
   
 五.SpringBoot如何分离启动类和控制类：
 1. 在src/main/java下创建com.project.app的package,新建applications.java
