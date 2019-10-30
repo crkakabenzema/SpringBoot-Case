@@ -43,7 +43,7 @@ Several cases about SpringBoot
         <version>1.5.6.RELEASE</version>
     </parent>
     <packaging>pom</packaging>
-2. 父级工程Pom中,添加<dependency Management>, <depenedencies>, <dependency>等.如:
+2. 父级工程Pom中,添加dependency Management, depenedencies和dependency等.如:
     
 <dependencyManagement>
     <dependencies>
