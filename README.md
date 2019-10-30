@@ -1,6 +1,35 @@
 # SpringBoot-Case
 Several cases about SpringBoot
 
+一.SpringBoot父工程pom配置:
+    <!-- 父级依赖 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.6.RELEASE</version>
+    </parent>
+
+    <!-- 使用springmvc和spring的jar包   -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 一.SpringBoot 基于类型安全的配置：
 1. 在application.properties文件中自定义属性，如：
 book.author = aa;
