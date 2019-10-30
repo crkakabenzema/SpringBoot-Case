@@ -362,7 +362,48 @@ public class SpringApplications {
 
 
 
+十三. SpringBoot整合Thymeleaf:
+1. 在module中添加dependency:
+<dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+<dependency>
+    <groupId>net.sourceforge.nekohtml</groupId>
+    <artifactId>nekohtml</artifactId>
+    <version>1.9.22</version>
+</dependency>
 
+2. 在application.properties中添加thymeleaf配置：
+
+# <!-- 关闭thymeleaf缓存 开发时使用 否则没有实时画面 -->
+spring.thymeleaf.cache = false
+# 检查模板是否存在，然后呈现
+spring.thymeleaf.check-template-location = true
+# Content-Type值
+spring.thymeleaf.content-type = text/html
+# 启用MVC thymeleaf试图分辨率
+spring.thymeleaf.enabled = true
+# 模板编码
+spring.thymeleaf.mode = LEGACYHTML5
+# 在构建URL时附加查看名称的后缀
+spring.thymeleaf.suffix = .html
+# 在构建URL时预先查看名称的前缀
+spring.thymeleaf.prefix = classpath:/templates/
+
+3. 在控制类添加模型，如：
+@Controller
+public class IndexController {
+
+    @RequestMapping("/thymeleaf")
+    public String show(Model model){
+
+        model.addAttribute("word","单词");
+        return "index";
+    }
+}
+
+4.在resources文件下创建templates文件夹，新建index.html文件
   
   
   
