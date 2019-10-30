@@ -187,15 +187,32 @@ public String show(@PathVariable String msg){
    
 
 
+八.多环境日志输出，根据不同环境定义不同的日志输出
+1. 在logback-spring.xml中使用springProfile节点来定义,如：
+<!-- 测试环境+开发环境 -->
+<springProfile name = "test,dev">
+    <logger name="com.project.controller" level="info" />
+</springProfile>
 
-八.SpringBoot 访问静态资源
+<！-- 生产环境 -->
+<springProfile name = "prod">
+    <logger name="com.project.controller" level="ERROR"/>
+</springProfile>
+2. 在application.properties中：
+spring.profiles.active = {envname}
+
+
+
+九.SpringBoot 访问静态资源
 1. Spring Boot 从classpath的 static, public或 /META-INF/RESOURCES文件夹或从ServletContext根目录提供静态内容
 默认 js在resources/public目录中；image在 resources/static目录中
 
 2. 设定自定义静态文件路径，js,css,image等：
 spring.resources.static-location = classpath:/staitc/
 
-九.SpringBoot使用FastJson解析json数据
+
+
+十.SpringBoot使用FastJson解析json数据
 两种方法：
 第一种方法：
 1. 让启动类applications.java继承WebMvcConfigureAdapter，
@@ -236,7 +253,9 @@ public HttpMessageConverters fastJsonMessageConverter(){
     return new HttpMessageConverters(con);
 }
 
-十.SpringBoot自定义拦截器：
+
+
+十一.SpringBoot自定义拦截器：
 1. 建立Interceptor.java类，继承 WebMvcConfigurerAdapter
 2. 重写HandlerInterceptor方法
 @Configuration//声明是一个配置
@@ -262,11 +281,88 @@ public class MyInterceptor extends WebMvcConfigurerAdapter {
         registry.addInterceptor(inter).addPathPatterns("/**");
     }
 }
-  
-  
-  
-  
-  
+
+
+十二.SpringBoot 实现异步调用：
+1. 创建asyncservice类package,新建AsyncService 接口，如:
+public interface AsyncService {
+
+    Future<String> doTask1()throws Exception;
+    Future<String> doTask2()throws Exception;
+    Future<String> doTask3()throws Exception;
+}
+2. 创建实现类，实现service类接口,添加@Service、@Async注释，如：
+@Service
+public class AsyncServiceImpl implements AsyncService {
+
+    private static Random random = new Random();
+
+    @Async
+    @Override
+    public Future<String> doTask1() throws Exception{
+        System.out.println("任务一开始执行");
+        long start = System.currentTimeMillis();
+        Thread.sleep(random.nextInt(10000));
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
+        //AsyncResult 为 Future的子类
+        return new AsyncResult<>("任务一结束");
+    }
+
+    @Async
+    @Override
+    public Future<String> doTask2() throws Exception{
+        System.out.println("任务二开始执行");
+        long start = System.currentTimeMillis();
+        Thread.sleep(random.nextInt(10000));
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
+        //AsyncResult 为 Future的子类
+        return new AsyncResult<>("任务二结束");
+    }
+}
+3. 在控制类注入asyncservice接口，添加@Autowired注释，如：
+@Controller
+public class TestController {
+
+    @Autowired
+    private AsyncService asyncService;
+
+    @RequestMapping("/async")
+    @ResponseBody
+    public String asyncTest() throws Exception {
+
+        long start = System.currentTimeMillis();
+
+        Future<String> task1 = asyncService.doTask1();
+        Future<String> task2 = asyncService.doTask1();
+        Future<String> task3 = asyncService.doTask1();
+
+        while(true){
+
+            if(task1.isDone() && task2.isDone() && task3.isDone()){
+                break;
+            }
+            Thread.sleep(1000);
+        }
+
+        long end = System.currentTimeMillis();
+        return "" + (end-start);
+    }
+}
+4. 在启动类添加@EnableAsync注释，如：
+@EnableAsync//开启异步调用
+@SpringBootApplication(scanBasePackages = "com.project")
+public class SpringApplications {
+    public static void main(String[] args)
+    {
+        SpringApplication.run(SpringApplications.class, args);
+    }
+}
+
+
+
+
   
   
   
