@@ -32,8 +32,7 @@ Several cases about SpringBoot
     
 二.SpringBoot 如何创建父工程和子工程：
 1. 在父工程的pom里，<package>必须是pom
-2. 在父工程的pom里，添加<dependency Management>, <depenedencies>, <dependency>等.
-  如:
+2. 在父工程的pom里，添加<dependency Management>, <depenedencies>, <dependency>等.如:
   <dependencyManagement>
     <dependencies>
         <dependency>
@@ -55,6 +54,7 @@ Several cases about SpringBoot
         </plugin>
     </plugins>
    </build>
+   
   3. 在父工程添加new module
   4. 在子工程添加相应的<dependencies>,<dependency>等
    <dependencies>
@@ -67,6 +67,7 @@ Several cases about SpringBoot
 三. SpringBoot 创建父工程对子工程的dependency进行管理
 1. 父级工程Pom的<package>pom</package>
 2. 父级工程Pom中,
+
 <dependencyManagement>
     <dependencies>
        <dependency> 
