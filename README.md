@@ -406,9 +406,102 @@ public class IndexController {
 4.在resources文件下创建templates文件夹，新建index.html文件
   
   
-  
-  
-  
+十四. SpringBoot整合QuartZ(任务工具):
+1. 新建job类，添加@Component注解，在run()函数前添加@Scheduled注解，如：
+@Component
+public class Myjob {
+
+    @Scheduled(fixedRate = 1000)
+    public void run(){
+         ...
+    }
+}
+2. 在启动类中添加@EnableScheduling注解
+
+
+
+十五. SpringBoot整合JdbcTemplate(数据库模板):
+1. 在pom添加dependency:
+<dependency>
+    <groupId>com.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+2. 在pom添加数据库的配置:
+spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+spring.datasource.username = root
+spring.datasource.password = root
+spring.datasource.url = jdbc:mysql://localhost:3306/db1
+3. 新建com.project.pojo包，新建数据库表类，如Users.java:
+public class Users {
+
+    private Integer id;
+
+    private String name;
+
+    public Integer getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
+    }
+}
+4. 新建com.project.dao包，新建dao类，添加@Repository,@Autowired注释，如：
+@Repository
+public class UserDao {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void addUser(Users user){
+
+        jdbcTemplate.update("insert into users(name,password,email) values(?,?,?)", user.getName(),user.getPassword(),user.getEmail());
+
+    }
+}
+5. 新建com.project.service包，新建service类,添加@Service，@Autowired注释，如：
+@Service
+public class UserService {
+
+    @Autowired
+    private UserDao userDao;
+
+    public void saveUser(Users user){
+
+        userDao.addUser(user);
+    }
+}
+6. 新建com.project.controller包，新建控制类，添加@Controller,@Autowired注释，如：
+@Controller
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @ResponseBody
+    @RequestMapping("/saveUser")
+    public String save(){
+        Users user = new Users();
+        user.setName("AA");
+        user.setEmail("aa@a.com");
+        user.setPassword("aa");
+        userService.saveUser(user);
+        return "success";
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
   
   
   
