@@ -64,7 +64,20 @@ Several cases about SpringBoot
     </dependency>
    </dependencies>
 
-二.SpringBoot 基于类型安全的配置：
+三. SpringBoot 创建父工程对子工程的dependency进行管理
+1. 父级工程Pom的<package>pom</package>
+2. 父级工程Pom中,
+<dependencyManagement>
+    <dependencies>
+       <dependency> 
+         <groupId>com.springframework.boot</groupId>
+         <artifactId>spring-boot-dependencies</artifactId>
+         <version>1.5.6.RELEASE</version>
+       </dependency>
+    </dependencies>
+</dependencyManagement>
+
+二.SpringBoot 自定义属性的类型安全配置方法ConfigurationProperties：
 1. 在application.properties文件中自定义属性，如：
 book.author = aa;
 book.name = bb;
