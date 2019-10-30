@@ -517,9 +517,9 @@ public class UserController {
             <version>1.1.2</version>
         </dependency>
 2. 在resources目录新建mybatis文件夹，新建mybatis-config.xml文件,添加：
-<? xml version="1.0" encoding="UTF-8">
+<?xml version="1.0" encoding="UTF-8" ？>
 <!DOCTYPE configuration
-      PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+      "-//mybatis.org//DTD Config 3.0//EN"
       "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     
@@ -546,6 +546,17 @@ spring:
         testOnReturn: false
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
+        
+mybatis:
+  mapper-locations: classpath:mapping/UsersMapper.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countsql
+  
 4.新建com.db1.pojo和com.db1.mapper包:
 将逆向工程的mapper包里的mapper.java文件放入resources文件夹里
 
