@@ -494,12 +494,12 @@ public class UserController {
 
 
 十六. mybatis逆向工程生成Mysql数据表的Mapper和Pojo:
-1. 添加mybatis.generator, mybatis, mybatis.spring.boot依赖
+1. 添加mybatis.generator, mybatis, mybatis.spring.boot依赖:
        <dependency>
             <groupId>org.mybatis.generator</groupId>
             <artifactId>mybatis-generator-core</artifactId>
             <version>1.3.2</version>
-        </dependency>
+       </dependency>
 
         <dependency>
             <groupId>org.mybatis</groupId>
