@@ -630,11 +630,11 @@ Users selectByPrimaryKey(Integer id);
 spring:
     database:
         name:test
-        url:jdbc:mysql://127.0.0.1:3306/db1
+        url:jdbc:mysql://127.0.0.1:3306/testdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimeZone=SYSTEM&amp;user=root&amp;password=Qwer1234
         username:root
-        password:root
+        password:...
         type:com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.jdbc.Driver
+        driver-class-name: com.mysql.cj.jdbc.Driver
         filters: stat
         maxActive: 20
         initialSize: 1
@@ -677,15 +677,98 @@ spring.thymeleaf.prefix = classpath:/templates/
 
 # 链接数据库的配置
 spring.datasource.driver-class-name = com.mysql.jdbc.Driver
-spring.datasource.username = root
-spring.datasource.password =
+spring.datasource.username = ...
+spring.datasource.password = ...
 spring.datasource.url = jdbc:mysql://localhost:3306/testdb
 
 5.新建com.project.pojo和com.project.mapper包:
-将逆向工程的mapper包里的mapper.java文件放入com.project.mapper文件夹里
-将逆向工程的mapper.xml文件放入resources的mapping文件夹下
+将逆向工程的mapper包里的dbmapper.java文件放入项目com.project.mapper文件夹里
+将逆向工程的dbmapper.xml文件放入项目resources的mapping文件夹下
 
+将逆向工程的pojo包里的db.java和dbExample.java分别放入项目com.project.pojo文件夹里
 
+6.创建接口，如在com.project.service下：
+package com.project.service;
+import com.github.pagehelper.PageHelper;
+import com.project.mapper.UsersMapper;
+import com.project.pojo.Users;
+import com.project.pojo.UsersExample;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class UsersServiceImpl implements UsersService{
+
+    @Autowired
+    private UsersMapper usersMapper;
+
+    //
+    @Override
+    public void addUser(Users user){
+        usersMapper.insert(user);
+    }
+
+    @Override
+    public List<Users> findUsers(int page, int rows){
+        UsersExample example = new UsersExample();
+        //Pagehelper plugin用于分页
+        PageHelper.startPage(page, rows);
+        List<Users> users = usersMapper.selectByExample(example);
+        return users;
+    }
+}
+
+7.创建实现类，如在com.project.service下：
+package com.project.service;
+import com.project.pojo.Users;
+import java.util.List;
+
+public interface UsersService {
+
+    //添加用户
+    void addUser(Users user);
+
+    //分页查找用户
+    List<Users> findUsers(int page, int rows);
+
+}
+
+8.添加控制类，如在项目文件com.project.controller里,创建DBController.java文件：
+package com.project.controller;
+import com.project.pojo.Users;
+import com.project.service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.List;
+
+@Controller
+public class UserController {
+
+    @Autowired
+    private UsersService userService;
+
+    @ResponseBody
+    @RequestMapping("/saveUser")
+    public String save(){
+        Users user = new Users();
+        user.setId(4);
+        user.setName("马六");
+        user.setEmail("m@m.com");
+        user.setPassword("m6");
+        userService.addUser(user);
+        return "success";
+    }
+
+    @RequestMapping("/findUsers/{page}/{rows}")
+    public List<Users> findUsers(@PathVariable int page, @PathVariable int rows)
+    {
+        return userService.findUsers(page, rows);
+    }
+}
 
 
 
