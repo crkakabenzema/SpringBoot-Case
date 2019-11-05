@@ -588,6 +588,9 @@ public class GeneratorSqlmap {
     }
 }
 
+4.生成的mapper.java文件中，添加行：
+Users selectByPrimaryKey(Integer id);
+
 
 
 十六. SpringBoot整合mybatis，利用xml文件配置:
@@ -613,6 +616,7 @@ public class GeneratorSqlmap {
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>1.1.2</version>
         </dependency>
+
 2. 在resources目录新建mybatis文件夹，新建mybatis-config.xml文件,添加：
 <?xml version="1.0" encoding="UTF-8" ？>
 <!DOCTYPE configuration
@@ -621,6 +625,7 @@ public class GeneratorSqlmap {
 <configuration>
     
 </configuration>
+
 3.在resources目录添加application.yml,添加数据源属性配置:
 spring:
     database:
@@ -653,10 +658,32 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countsql
-  
-4.新建com.db1.pojo和com.db1.mapper包:
-将逆向工程的mapper包里的mapper.java文件放入resources文件夹里
 
+4. 在resources目录添加application.properties全局配置文件：
+# <!-- 关闭thymeleaf缓存 开发时使用 否则没有实时画面 -->
+spring.thymeleaf.cache = false
+# 检查模板是否存在，然后呈现
+spring.thymeleaf.check-template-location = true
+# Content-Type值
+spring.thymeleaf.content-type = text/html
+# 启用MVC thymeleaf试图分辨率
+spring.thymeleaf.enabled = true
+# 模板编码
+spring.thymeleaf.mode = LEGACYHTML5
+# 在构建URL时附加查看名称的后缀
+spring.thymeleaf.suffix = .html
+# 在构建URL时预先查看名称的前缀
+spring.thymeleaf.prefix = classpath:/templates/
+
+# 链接数据库的配置
+spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+spring.datasource.username = root
+spring.datasource.password =
+spring.datasource.url = jdbc:mysql://localhost:3306/testdb
+
+5.新建com.project.pojo和com.project.mapper包:
+将逆向工程的mapper包里的mapper.java文件放入com.project.mapper文件夹里
+将逆向工程的mapper.xml文件放入resources的mapping文件夹下
 
 
 
