@@ -493,6 +493,103 @@ public class UserController {
 
 
 
+十六. mybatis逆向工程生成Mysql数据表的Mapper和Pojo:
+1. 添加mybatis.generator, mybatis, mybatis.spring.boot依赖
+       <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        
+2. 与src同级目录生成generatorConfig.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <context id="MybatisGenerator" targetRuntime="MyBatis3" >
+        <commentGenerator>
+            <!-- 是否去除自动生成的注解，true是，false否 -->
+            <property name="supressAllComments" value="true"/>
+        </commentGenerator>
+        <!-- 数据库连接信息： -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/testdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimeZone=SYSTEM&amp;user=root&amp;password=Qwer1234"></jdbcConnection>
+        <!-- 默认值false,把JDBC DECIMAL 和NUMBER类型解析为Integer，为true时 解析为 java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!-- 生成的po实体类的存放位置 -->
+        <javaModelGenerator targetPackage="com.project.pojo" targetProject=".\src\main\java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 从数据库返回的值为清理前后的空格 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!-- 生成的mapper映射文件（XML）的存放位置 -->
+        <sqlMapGenerator targetPackage="com.project.mapper" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+        <!-- 生成的mapper接口（JAVA文件）的存放位置 -->
+        <javaClientGenerator targetPackage="com.project.mapper" type="XMLMAPPER" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+        <!-- 指定数据库表 根据表名，有多个表就写多条数据 -->
+        <table tableName="testuser"></table>
+    </context>
+</generatorConfiguration>
+
+3. 新建java文件：
+package com.project.app;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.config.Configuration;
+import org.mybatis.generator.config.xml.ConfigurationParser;
+import org.mybatis.generator.exception.XMLParserException;
+import org.mybatis.generator.internal.DefaultShellCallback;
+
+public class GeneratorSqlmap {
+    public void generate() throws Exception {
+        List<String> warnings = new ArrayList<String>();
+        boolean overwrite =true;
+        File configFile = new File("generatorConfig.xml");
+        System.out.println("--------"+configFile.getAbsolutePath());
+        ConfigurationParser cp = new ConfigurationParser(warnings);
+        Configuration config = cp.parseConfiguration(configFile);
+        DefaultShellCallback callback = new DefaultShellCallback(overwrite);
+        MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config,callback,warnings);
+        myBatisGenerator.generate(null);
+    }
+    public static void main(String[] args) {
+        GeneratorSqlmap generatorSqlmap = new GeneratorSqlmap();
+        try {
+            generatorSqlmap.generate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+
+
 十六. SpringBoot整合mybatis，利用xml文件配置:
 1. 在pom文件中，添加dependency:
        <dependency>
