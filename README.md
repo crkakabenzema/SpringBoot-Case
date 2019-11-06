@@ -171,6 +171,7 @@ public class TestSpringController {
 ```
 
 
+
 ## 六.SpringBoot如何分离启动类和控制类：
 
 ### 1.在src/main/java下新建package,新建启动类applications.java，启动类中添加注释：
@@ -338,7 +339,7 @@ public class MyInterceptor extends WebMvcConfigurerAdapter {
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {                         HandlerInterceptor inter = new HandlerInterceptor();
-        public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+        public boolean preHandle(HttpServletRequest httpServletRequest，HttpServletResponse httpServletResponse, Object o) throws Exception {
          System.out.println("自定义拦截器");
          return true;
         }
@@ -350,11 +351,12 @@ public class MyInterceptor extends WebMvcConfigurerAdapter {
        public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
         ...
        }
-                                                              }
+                                                              
        registry.addInterceptor(inter).addPathPatterns("/**");
     }
 }
 ```
+
 
 
 ## 十三.SpringBoot 实现异步调用：
@@ -684,10 +686,6 @@ public class UserController {
     </context>
 </generatorConfiguration>
 ```
-
-        <table tableName="testuser"></table>
-​    </context>
-</generatorConfiguration>
 
 ### 3.新建java生成mapper文件：
 
