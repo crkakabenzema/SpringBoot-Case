@@ -939,3 +939,336 @@ public class UserController {
    }
 }
 ```
+
+9.添加启动类注释@MapperScan，如：
+
+```java
+@SpringBootApplication(scanBasePackages = "com.project")
+@MapperScan("com.project.mapper")
+public class SpringApplications {    
+    public static void main(String[] args){
+        SpringApplication.run(SpringApplications.class, args);
+    }
+}
+```
+
+
+
+## 十八. SpringBoot整合mybatis，利用注解方式配置:
+
+### 1.在pom添加dependency:
+
+```xml
+<dependency>    
+    <groupId>org.mybatis.spring.boot</groupId>    
+    <artifactId>mybatis-spring-boot-starter</artifactId
+    <version>1.3.1</version>
+</dependency>
+```
+
+### 2.新建application.properties全局文件：
+
+```properties
+# 链接数据库的配置
+spring.datasource.driver-class-name = com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password = Qwer1234
+spring.datasource.url = jdbc:mysql://localhost:3306/testdb
+```
+
+### 3.将逆向工程的db.java添加到项目的com.project.pojo包中:
+
+### 4.新建com.project.mapper包，添加dbmapper.java文件：
+
+```java
+package com.project.mapper;
+import com.project.pojo.Users;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+public interface UsersMapper {    
+    @Select("select * from testuser where name=#{name}")    
+    Users findUsersByName(@Param("name")String name);    
+    @Insert("insert into testuser(id,name,password) values(#{id},#{name},#{password})")    
+    void addUser(@Param("id")Integer id,@Param("name")String name, @Param("password") String password);
+}
+```
+
+### 5.新建com.project.servcie类,创建dbService.java接口，如：
+
+```java
+package com.project.service;
+import com.project.mapper.UsersMapper;
+import com.project.pojo.Users;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UsersServiceImpl implements UsersService{
+
+    @Autowired
+    private UsersMapper usersMapper;
+
+    @Override
+    public Users findUser(String name) {
+        return usersMapper.findUsersByName(name);
+    }
+
+    @Override
+    public void saveUser(Users user) {
+        usersMapper.addUser(user.getId(),user.getName(),user.getPassword());
+    }
+}
+
+```
+
+### 6.创建dbServiceImpl.java实现类：
+
+```java
+package com.project.service;
+import com.project.mapper.UsersMapper;
+import com.project.pojo.Users;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+@Servicepublic class UsersServiceImpl implements UsersService{    
+    @Autowired    
+    private UsersMapper usersMapper;    
+    @Override    
+    public Users findUser(String name) {        
+        return usersMapper.findUsersByName(name);    
+    }    
+    @Override    
+    public void saveUser(Users user) {
+        usersMapper.addUser(user.getId(),user.getName(),user.getPassword());    }
+}
+```
+
+### 7.创建控制类，如dbController.java：
+
+```java
+package com.project.controller;
+import com.project.pojo.Users;
+import com.project.service.UsersService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+@RestController
+@Controller
+public class UsersController {    
+    @Autowired    
+    private UsersService usersService;    
+    @RequestMapping("/findUser")    
+    @ResponseBody    
+    public Users findUser(String name){        
+        return usersService.findUser(name);    
+    }    
+    @RequestMapping("/addUser")    
+    @ResponseBody    
+    public String addUser(){        
+        Users user = new Users();        
+        user.setId(5);        
+        user.setName("Q");        
+        user.setPassword("12");        
+        usersService.saveUser(user);        
+        return "OK";    
+    }
+}
+```
+
+### 9.添加启动类注释@MapperScan，如：
+
+```java
+@SpringBootApplication(scanBasePackages = "com.project")
+@MapperScan("com.project.mapper")
+public class SpringApplications {    
+    public static void main(String[] args){
+        SpringApplication.run(SpringApplications.class, args);
+    }
+}
+```
+
+
+
+## 十九. Springboot 利用包名区分数据源：
+
+### 1.配置application.properties全局文件,添加数据库属性，如：
+
+```properties
+# 链接testdb数据库的配置
+spring.datasource.testdb.driver-class-name = com.mysql.cj.jdbc.Driver
+spring.datasource.testdb.username = root
+spring.datasource.testdb.password = Qwer1234
+spring.datasource.testdb.url = jdbc:mysql://localhost:3306/testdb
+# 链接testdb1数据库的配置
+spring.datasource.testdb1.driver-class-name = com.mysql.cj.jdbc.Driver
+spring.datasource.testdb1.username = root
+spring.datasource.testdb1.password = Qwer1234
+spring.datasource.testdb1.url = jdbc:mysql://localhost:3306/testdb
+```
+
+### 2.新建com.project.datasource包，添加db1.java,db2.java数据源类，若选db1为首选数据源，则添加@primary注释，如：
+
+```java
+//注册到Spring容器中
+@Configuration
+@MapperScan(basePackages="com.project.testdb.mapper",sqlSessionFactoryRef = "testdbSqlSessionFactory")
+public class DataSource1 {    
+    /*    
+    配置db1数据库    
+    @return    
+    通过configurationproperties注释指定db对象     
+    */    
+    @Bean(name="testdbDatasource")
+    @ConfigurationProperties(prefix="spring.datasource.testdb")    
+    @Primary    
+    public DataSource testDatasource(){        
+        return DataSourceBuilder.create().build();    
+    }    
+    /*    
+    创建SqlSessionFactory    
+    @param dataSource    
+    @return    
+    @throws Exception     
+    */    
+    @Bean(name="testdbSqlSessionFactory")    
+    @Primary
+    public SqlSessionFactory testSqlSessionFactory
+        (@Qualifier("testdbDatasource") DataSource dataSource) throws Exception{
+        SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+        bean.setDataSource(dataSource);
+        return bean.getObject();   
+    }    
+    /*    
+    配置事务管理    
+    @param dataSource    
+    @return     
+    */   
+    @Bean(name="testdbTransactionManager")
+    @Primary   
+    public DataSourceTransactionManager testTransactionManager(        @Qualifier("testdbDatasource")DataSource dataSource){
+        return new DataSourceTransactionManager(dataSource);    
+    }    
+    /*    
+    封装数据库对象  
+    */    
+    @Bean(name="testdbSqlSessionTemplate")
+    @Primary
+    public SqlSessionTemplate testSqlSessionTemplate(@Qualifier("testdbSqlSessionFactory") SqlSessionFactory sqlSessionFactory){
+        return new SqlSessionTemplate(sqlSessionFactory);
+    }
+}
+```
+
+### 3.将数据库逆向工程的db.java类添加到com.project.pojo包中
+
+### 4.新建对应数据库的com.project.#{dbname}.mapper包，新建对应的dbMapper接口，添加@Qualifier注解，如：
+
+```java
+//使用注解方式,传递数据源datasource
+@Qualifier("testdbSqlSessionFactory")
+public interface UsersMapper {    
+    @Insert("insert into testuser(id,name,password) values(#{id},#{name},#{password})")    
+    void addUser(@Param("id") Integer id,@Param("name") String name, @Param("password") String password);
+}
+```
+
+### 5.分别新建对应的com.project.#{dbname}.service包、dbService接口和service类，如：
+
+```java
+public interface UsersService {    
+    void saveUser(Users user);
+}
+```
+
+```java
+@Service
+public class UsersServiceImpl implements UsersService {    
+    @Autowired    
+    private UsersMapper usersMapper;
+    @Override  
+    public void saveUser(Users user){     
+        usersMapper.addUser(user.getId(),user.getName(),user.getPassword());   
+    }
+}
+```
+
+### 6.新建com.project.controller包，新建controller类：
+
+```java
+@Controller
+public class IndexController {    
+    //注入service类
+    @Autowired 
+    private UsersService usersService;
+    @Autowired
+    private UserService userService;
+    
+    @RequestMapping("/addUser") 
+    @ResponseBody  
+    public String addUser(){
+        Users u = new Users();
+        u.setId(8); 
+        u.setName("li");
+        u.setPassword("121");
+        usersService.saveUser(u);
+        return "ok";
+    }
+}
+```
+
+### 7.启动类无需另添加@MapperScan注释，因datasource包已添加@MapperScan注释
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
