@@ -41,12 +41,12 @@ Several cases about SpringBoot
 
 ```xml
 <!-- 父级依赖 -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.6.RELEASE</version>
-    </parent>
-    <packaging>pom</packaging>
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.5.6.RELEASE</version>
+</parent>
+<packaging>pom</packaging>
 ```
 
 ### 2.父级工程Pom中,添加dependency Management, depenedencies和dependency等.如:
@@ -734,7 +734,7 @@ Users selectByPrimaryKey(Integer id);
 
 
 
-## 十六. SpringBoot整合mybatis，利用xml文件配置:
+## 十七. SpringBoot整合mybatis，利用xml文件配置:
 
 ### 1.在pom文件中，添加dependency:
 
