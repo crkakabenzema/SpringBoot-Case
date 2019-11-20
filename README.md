@@ -118,9 +118,25 @@ book.name = bb;
 
 ## 1.SpringBoot 如何配置profile，实现不同开发环境配置:
 
+方法一：
+
 ### 1.1创建application-prod.properties, application-sit.properties, application-dev.properties文件，可添加不同运行环境的端口，激活状态等
 
 ### 1.2通过在application.properties中设置spring.profiles.active = dev/sit/prod来指定活动的profile
+
+方法二：
+
+在pom.xml文件中添加：
+
+```xml
+<profiles>
+<profile>
+    <id>  ... </id>
+    <activation>
+        <activeByDefault>true</activeByDefault>      </activation>
+</profile>
+<profiles>
+```
 
 
 
@@ -190,7 +206,6 @@ public class TestSpringController {
  <groupId>org.springframework.boot</groupId>
  <artifactId>spring-boot-devtools</artifactId>
 </dependency>
-
 ```
 
 
@@ -209,14 +224,12 @@ public class TestSpringController {
 <springProfile name = "prod">
     <logger name="com.project.controller" level="ERROR"/>
 </springProfile>
-
 ```
 
 ### 4.2在application.properties中：
 
 ```properties
 spring.profiles.active = {envname}
-
 ```
 
 
@@ -269,7 +282,6 @@ public class SpringApplications {
  <artifactId>nekohtml</artifactId>
  <version>1.9.22</version>
 </dependency>
-
 ```
 
 ### 2.2在application.properties中添加thymeleaf配置：
@@ -300,7 +312,6 @@ spring.thymeleaf.suffix = .html
 # 在构建URL时预先查看名称的前缀
 
 spring.thymeleaf.prefix = classpath:/templates/
-
 ```
 
 ### 2.3在控制类添加模型，如：
@@ -315,7 +326,6 @@ public class IndexController {
         return "index";
     }
 }
-
 ```
 
 ### 2.4在resources文件下创建templates文件夹，新建index.html文件
@@ -331,7 +341,6 @@ public class IndexController {
 public List<Users> findUsers(@PathVariable int page, @PathVariable int rows){
     return usersService.findUsers(page, rows);
 }
-
 ```
 
 ### 方法二：亦可采用@RequestBody方式向server传递参数，如:
@@ -348,7 +357,6 @@ public @ResponseBody Map<String, Object> save(@RequestBody User user) {
     result.put("id", user.id);    
     return result;
 }
-
 ```
 
 ```java
@@ -357,7 +365,6 @@ public interface UserDao {
     String addUser(User user);
     void updateUser(User user); 
 }
-
 ```
 
 ```java
@@ -385,7 +392,6 @@ public class UserImpl implements UserDao {
         int check = jdbcTemplate.update(sql);
     }
 }
-
 ```
 
 ### 方法三：使用mybatis在映射类文件添加注释@Insert,@Select,@Update,@Delete
@@ -404,7 +410,6 @@ public interface UsersMapper {
     @Select("select * from testuser where name=#{name}")
     Users findByName(@Param("name")String name);
 }
-
 ```
 
 ```java
@@ -427,7 +432,6 @@ public class UsersServiceImpl implements UsersService {
         return usersMapper.findByName(name);
     }
 }
-
 ```
 
 ### 替代方案，使用mybatis在xml文件中配置(Intellij版)：
@@ -564,7 +568,6 @@ public class UsersServiceImpl implements UsersService {
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/oasys?serverTimezone=GMT%2B8&useSSL=false&useUnicode=true&characterEncoding=UTF8
-
 ```
 
 ```yml
@@ -591,7 +594,6 @@ pagehelper:
   reasonable: true
   supportMethodsArgument: true
   params.count: countSql
-
 ```
 
 #### 将mybatis-config.xml文件添加至resources/mybatis文件夹中：
@@ -643,7 +645,6 @@ pagehelper:
 </settings>
 
 </configuration>
-
 ```
 
 #### 添加resources/generatorConfig.xml文件:
@@ -704,7 +705,6 @@ pagehelper:
 
     </context>
 </generatorConfiguration>
-
 ```
 
 #### 使用mybatis-generator plugin生成mapper，mapper.xml, pojo类文件db和dbExample，如需添加查找所有功能，添加如下至dbMapper.xml：
@@ -715,14 +715,12 @@ pagehelper:
     <include refid="Base_Column_List" />
     from testuser
 </select>
-
 ```
 
 #### 添加如下至dbMapper接口文件：
 
 ```java
 List<Testuser> getList();
-
 ```
 
 
@@ -739,7 +737,6 @@ List<Testuser> getList();
     <artifactId>spring-boot-starter-tomcat</artifactId>    
     <scope>compile</scope>
 </dependency>
-
 ```
 
 ### 4.3启动类继承SpringBootServletInitializer,重写configure方法：
@@ -755,7 +752,6 @@ public class SpringApplications extends SpringBootServletInitializer {    public
      return builder.sources(SpringApplications.class); 
  }
 }
-
 ```
 
 
@@ -822,7 +818,6 @@ public class SocketMessage {
         this.message = message;    
     }
 }
-
 ```
 
 ```java
@@ -836,7 +831,6 @@ public class SocketResponse {
         return responseMessage;
     }
 }
-
 ```
 
 ### 5.4新建控制包com.project.controller,创建控制类文件，如：
@@ -856,7 +850,6 @@ public class WebSocketController {
         return "webSocket";    
     }
 }
-
 ```
 
 ### 5.5新建resources/templates文件夹，添加template文件(存放页面)，如：
@@ -926,7 +919,6 @@ public class WebSocketController {
 </script>
 </body>
 </html>
-
 ```
 
 ### 5.6新建resources/static文件夹，存放sockjs.min, stomp, socket, jquery的js文件(未安装jquery,使用:npm install -g grunt-cli    :grunt && grunt dist:/pathname/命令)
@@ -1016,14 +1008,12 @@ converters) {
     convert.setFastJsonConfig(config);
     converters.add(convert);
 }
-
 ```
 
 #### 1.3设置application.properties,添加：
 
 ```properties
 spring.http.encoding.force = true
-
 ```
 
 ### 方法二：
@@ -1049,7 +1039,6 @@ public HttpMessageConverters fastJsonMessageConverter(){
     
     return new HttpMessageConverters(con);
 }
-
 ```
 
 
@@ -1063,7 +1052,6 @@ public HttpMessageConverters fastJsonMessageConverter(){
  <groupId>com.springframework.boot</groupId>
  <artifactId>spring-boot-starter-jdbc</artifactId>
 </dependency>
-
 ```
 
 ### 3.2在pom添加数据库的配置:
@@ -1073,7 +1061,6 @@ spring.datasource.driver-class-name = com.mysql.jdbc.Driver
 spring.datasource.username = root
 spring.datasource.password = root
 spring.datasource.url = jdbc:mysql://localhost:3306/db1
-
 ```
 
 ### 3.3新建com.project.pojo包，新建数据库表类，如Users.java:
@@ -1092,7 +1079,6 @@ public class Users {
         return name;
     }
 }
-
 ```
 
 ### 3.4新建com.project.dao包，新建dao类，添加@Repository,@Autowired注释，如：
@@ -1108,7 +1094,6 @@ public class UserDao {
         jdbcTemplate.update("insert into users(name,password,email) values(?,?,?)", user.getName(),user.getPassword(),user.getEmail());
     }
 }
-
 ```
 
 ### 3.5新建com.project.service包，新建service类,添加@Service，@Autowired注释，如：
@@ -1124,7 +1109,6 @@ public class UserService {
         userDao.addUser(user);
     }
 }
-
 ```
 
 ### 3.6新建com.project.controller包，新建控制类，添加@Controller,@Autowired注释，如：
@@ -1147,7 +1131,6 @@ public class UserController {
         return "success";
     }
 }
-
 ```
 
 
@@ -1172,7 +1155,6 @@ public class UserController {
     <artifactId>mybatis-spring-boot-starter</artifactId>
     <version>1.3.1</version>
 </dependency>
-
 ```
 
 ### 4.2与src同级目录生成generatorConfig.xml:
@@ -1254,14 +1236,12 @@ public class GeneratorSqlmap {
         }
     }
 }
-
 ```
 
 ### 4.4生成的mapper.java文件中，添加行：
 
 ```java
 Users selectByPrimaryKey(Integer id);
-
 ```
 
 
@@ -1291,7 +1271,6 @@ Users selectByPrimaryKey(Integer id);
     <artifactId>pagehelper-spring-boot-starter</artifactId>
     <version>1.1.2</version>
 </dependency>
-
 ```
 
 ### 5.2在resources目录新建mybatis文件夹，新建mybatis-config.xml文件,添加：
@@ -1304,7 +1283,6 @@ Users selectByPrimaryKey(Integer id);
 <configuration>
 
 </configuration>
-
 ```
 
 ### 5.3在resources目录添加application.yml,添加数据源属性配置:
@@ -1341,7 +1319,6 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countsql
-
 ```
 
 ### 5.4在resources目录添加application.properties全局配置文件：
